@@ -1,0 +1,204 @@
+---
+title: "integrated"
+author: "Fan Chen"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r}
+setwd("/Users/fanfan/Documents/2022fallB/GBA436R/Assignment3")
+fullFile = read.csv('Student Data 9.csv')
+noReportFile = fullFile[,-which(colnames(fullFile) %in% "reports")]
+```
+
+```{r}
+rmse <- function(modelname){
+    return(mean((predict(modelname,validationData) - validationData$card)^2))
+}
+```
+
+
+```{r}
+nFoldset = c(4,5,10)
+threshset = c(0.01,0.005,0.001,0.0005,0.0001,0.00005,0.00001,0.000005,0.000001)
+degreeset = c(1,2,3,4,5)
+
+argument = c()
+rmsemin = 1
+for(degreenum in degreeset){
+    for(nFold in nFoldset){
+        for(threshnum in threshset){
+            set.seed(666)
+            valNum = floor(runif(nrow(noReportFile)) * nFold)+1
+            modelPerformance = matrix(NA,nFold,1)
+            for(fold in 1:nFold){
+                trainingData = subset(noReportFile, valNum!= fold)
+                validationData = subset(noReportFile, valNum == fold)
+                model1 = earth(card~.,degree = degreenum, data = trainingData, thresh = threshnum)
+                valid1 = rmse(model1) 
+                modelPerformance[fold, ] = c(valid1)
+            }
+
+            temp = colMeans(modelPerformance)[1]
+            if(temp < rmsemin){
+                rmsemin = temp
+                modelfinal = model1
+                print(temp)
+                argument = c(degreenum,threshnum,nFold)
+            }
+        }
+    }
+}
+argument # degree = 4, thresh = 0.001, nFold = 5
+
+for(degreenum in 2:5){
+    for(nFold in nFoldset){
+        for(threshnum in threshset){
+            set.seed(666)
+            valNum = floor(runif(nrow(noReportFile)) * nFold)+1
+            modelPerformance = matrix(NA,nFold,1)
+            for(fold in 1:nFold){
+                
+                trainingData = subset(noReportFile, valNum!= fold)
+                validationData = subset(noReportFile, valNum == fold)
+                model1 = lm(card~I((age+income+share+expenditure+owner+selfemp+dependents+months+majorcards+active)^degreenum), data = trainingData) 
+                valid1 = rmse(model1) 
+                modelPerformance[fold, ] = c(valid1)
+            }
+            temp = colMeans(modelPerformance)[1]
+            if(temp < rmsemin){
+                rmsemin = temp
+                modelfinal = model1
+                print(temp)
+                argument = c(degreenum,threshnum,nFold)
+            }
+        }
+    }
+}
+argument # degree = 4, thresh = 0.001, nFold = 5
+
+```
+
+```{r}
+nFoldset = c(4,5,10)
+threshset = c(0.01,0.005,0.001,0.0005,0.0001,0.00005,0.00001,0.000005,0.000001)
+degreeset = c(1,2,3,4,5)
+
+argumentage = c()
+rmsemin = 1
+for(degreenum in degreeset){
+    for(nFold in nFoldset){
+        for(threshnum in threshset){
+            set.seed(666)
+            valNum = floor(runif(nrow(noReportFile)) * nFold)+1
+            modelPerformance = matrix(NA,nFold,1)
+            for(fold in 1:nFold){
+                trainingData = subset(noReportFile, valNum!= fold)
+                validationData = subset(noReportFile, valNum == fold)
+                model1 = earth(card~.-age,degree = degreenum, data = trainingData, thresh = threshnum)
+                valid1 = rmse(model1) 
+                modelPerformance[fold, ] = c(valid1)
+            }
+            temp = colMeans(modelPerformance)[1]
+            if(temp < rmsemin){
+                rmsemin = temp
+                modelagefinal = model1
+                print(temp)
+                argumentage = c(degreenum,threshnum,nFold)
+            }
+        }
+    }
+}
+argumentage# degree = 4, thresh = 0.001, nFold = 5
+
+for(degreenum in 2:5){
+    for(nFold in nFoldset){
+        for(threshnum in threshset){
+            set.seed(666)
+            valNum = floor(runif(nrow(noReportFile)) * nFold)+1
+            modelPerformance = matrix(NA,nFold,1)
+            for(fold in 1:nFold){
+                trainingData = subset(noReportFile, valNum!= fold)
+                validationData = subset(noReportFile, valNum == fold)
+                model1 = lm(card~I((income+share+expenditure+owner+selfemp+dependents+months+majorcards+active)^degreenum), data = trainingData) 
+                valid1 = rmse(model1) 
+                modelPerformance[fold, ] = c(valid1)
+            }
+            temp = colMeans(modelPerformance)[1]
+            if(temp < rmsemin){
+                rmsemin = temp
+                modelagefinal = model1
+                print(temp)
+                argumentage = c(degreenum,threshnum,nFold)
+            }
+        }
+    }
+}
+argumentage# degree = 4, thresh = 0.001, nFold = 5
+
+```
+
+```{r}
+nFoldset = c(4,5,10)
+threshset = c(0.01,0.005,0.001,0.0005,0.0001,0.00005,0.00001,0.000005,0.000001)
+degreeset = c(1,2,3,4,5)
+
+argumentfull = c()
+rmsemin = 1
+for(degreenum in degreeset){
+    for(nFold in nFoldset){
+        for(threshnum in threshset){
+            set.seed(666)
+            valNum = floor(runif(nrow(fullFile)) * nFold)+1
+            modelPerformance = matrix(NA,nFold,1)
+            for(fold in 1:nFold){
+                trainingData = subset(fullFile, valNum!= fold)
+                validationData = subset(fullFile, valNum == fold)
+                model1 = earth(card~.,degree = degreenum, data = trainingData, thresh = threshnum)
+                valid1 = rmse(model1) 
+                modelPerformance[fold, ] = c(valid1)
+            }
+
+            temp = colMeans(modelPerformance)[1]
+            if(temp < rmsemin){
+                rmsemin = temp
+                modelfullfinal = model1
+                print(rmsemin)
+                argumentfull = c(degreenum,threshnum,nFold)
+            }
+        }
+    }
+}
+argumentfull# degree = 2, thresh = 0.0001, nFold = 10
+
+for(degreenum in 2:5){
+    for(nFold in nFoldset){
+        for(threshnum in threshset){
+            set.seed(666)
+            valNum = floor(runif(nrow(fullFile)) * nFold)+1
+            modelPerformance = matrix(NA,nFold,1)
+            for(fold in 1:nFold){
+                trainingData = subset(fullFile, valNum!= fold)
+                validationData = subset(fullFile, valNum == fold)
+                model1 = lm(card~I((age+income+share+expenditure+owner+selfemp+dependents+months+majorcards+active)^degreenum), data = trainingData) 
+                valid1 = rmse(model1) 
+                modelPerformance[fold, ] = c(valid1)
+            }
+            temp = colMeans(modelPerformance)[1]
+            if(temp < rmsemin){
+                rmsemin = temp
+                modelfullfinal = model1
+                print(temp)
+                argumentfull = c(degreenum,threshnum,nFold)
+            }
+        }
+    }
+}
+argumentfull# degree = 2, thresh = 0.0001, nFold = 10
+
+```
+
+
+
+
+

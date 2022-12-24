@@ -1,0 +1,58 @@
+---
+title: "MKT436R - Homework 1"
+author: "Fan Chen"
+output: html_document
+---
+
+Please read all instructions carefully. Upon opening this file, I recommend you 'knit' it in R-Studio to confirm the process works on your computer. To allow this file to be knit, you might need to save it in a new location, as you do not have write permissions in the dropbox folder, and R does not work well with chinese characters. Replace 'My Name' above with your name. Do not comment out the lines that produce output. Check your html file before submission to ensure it has all relevant output. Ensure all answers are your own words and your own work. Do not delete anything below these instructions. Written answers are submitted directly via blackboard. Thank you!
+
+**Question 1A:**
+
+```{r Question 1A}
+#INSERT CODE HERE
+setwd("/Users/fanfan/Documents/2022fallB/GBA436R/Assignment1")
+dt = read.csv("Homework 1 Data - 436R.csv", header=TRUE, sep=",")
+```
+
+**Question 1B:**
+
+```{r Question 1B}
+#INSERT CODE HERE
+head(dt, 10)
+```
+
+**Question 1C:**
+
+```{r Question 1C}
+#INSERT CODE HERE
+treatmentDate = dt[dt$isTreatmentPeriod == 1, ]$date
+earliestDate = sort(treatmentDate, decreasing = F)[1]
+earliestDate
+```
+
+**Question 1D:**
+
+```{r Question 1D}
+#INSERT CODE HERE
+treatmentGroup = dt[dt$isTreatmentGroup == 1, ]
+fitTreat = lm(log(revenue)~isTreatmentPeriod, data = treatmentGroup)
+summary(fitTreat)
+```
+
+**Question 1E:**
+
+```{r Question 1E}
+#INSERT CODE HERE
+controlGroup = dt[dt$isTreatmentPeriod == 0, ]
+fitControl = lm(log(revenue)~isTreatmentGroup, data = controlGroup)
+summary(fitControl)
+```
+
+**Question 1F:**
+
+```{r Question 1F}
+#INSERT CODE HERE
+treatmentPeriod = dt[dt$isTreatmentPeriod == 1, ]
+fitDMA = lm(log(revenue)~isTreatmentGroup, data = treatmentPeriod)
+summary(fitDMA)
+```

@@ -1,0 +1,62 @@
+---
+title: "Assignment 2"
+author: "YOUR NAME"
+output: html_document
+---
+
+Please read all instructions carefully.  This helps us return your assignments as quickly as possible. 
+
+  Click 'Save As', and rename the document with your blackboard username. 
+  Fill in your name above.
+  To allow this file to be knit, you might need to save it in a new location, as you do not have write permissions in the dropbox folder, and R does not work well with Chinese characters.
+	Do not comment out the lines that produce output.  Check your html file before submission to ensure it has all relevant output.  
+	Ensure all answers are your own words and your own work.  Do not delete anything below these instructions.  
+	Before you submit, zip both the rmd and results html files.  Submit this on blackboard. 
+
+
+**Question 1A:**
+```{r Question 1A}
+#INSERT CODE HERE
+setwd("/Users/fanfan/Documents/2022fallB/GBA436R/Assignment2")
+dt = read.csv("Facebook Data.csv", header=TRUE, sep=",")
+summary(lm(clickPerDollar~factor(adType)+factor(category)+factor(placement)+factor(keywords)+factor(body)+ageMean, data = dt))
+```
+
+
+**Question 1B:**
+```{r Question 1B}
+#INSERT CODE HERE - WRITTEN ANSWER ON BLACKBOARD
+#Comment out the line that gives you an error so that you can compile it
+#summary(lm(clickPerDollar~date+factor(adType)+factor(category)+factor(placement)+factor(keywords)+factor(body)+ageMean, data = dt))
+# Since it contains non-numeric and only one same independent value, it will fail to fit if there aren't at least 2 different non-numeric values for the linear regression.
+```
+
+
+**Question 1C:**
+```{r Question 1C}
+#INSERT CODE HERE
+## The coefficient shows that, compared to the category "cosmetics", if we use category "general", the average click per dollar will decrease by 45.741606 times holding other elements unchanged.
+```
+
+**Question 1D:**
+```{r Question 1D}
+#INSERT CODE HERE - WRITTEN ANSWER ON BLACKBOARD
+## The coefficient shows that when average age of the targeted consumers increase by 1 years old, the average click per dollar will increase by 2.598849 times holding other factors unchanged.
+```
+
+
+**Question 2A:**
+```{r Question 2A}
+#INSERT CODE HERE - WRITTEN ANSWER ON BLACKBOARD
+summary(lm(clickPerDollar~factor(adType)+factor(category)+factor(placement)+factor(keywords)+factor(body)+ageMean+factor(category)*ageMean, data = dt))
+
+### factor(category)eCom:ageMean
+### When the average age of the targeted consumers is 0, when we shift the category from "cosmetics" to "ecom", the click per dollar will decrease for 0.36125 times on average.
+```
+
+
+**Question 2B:**
+```{r Question 2B}
+#INSERT CODE HERE - WRITTEN ANSWER ON BLACKBOARD
+## The coefficient changes from -42.6 to -28.3. The coefficient is calculated when average age is 0 in 2a, but not in 1a and it decreases with the age increasing.
+```

@@ -1,0 +1,5 @@
+setwd("/Users/fanfan/Documents/2022fallB/GBA436R/Assignment2")
+dt = read.csv("Facebook Data.csv", header=TRUE, sep=",")
+x = c('1','1','1','2','1','1')
+y = c(2,3,4,5,6,7)
+lm(y~x)

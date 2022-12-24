@@ -1,0 +1,115 @@
+---
+title: "fchen24 - Homework 4"
+author: "fchen24"
+output: html_document
+---
+
+Please read all instructions carefully.  Replace the capital letters above with your blackboard username.  To allow this file to be knit, you might need to save it in a new location, as you do not have write permissions in the dropbox folder, and R does not work well with chinese characters.
+Do not comment out the lines that produce output.  Check your html file before submission to ensure it has all relevant output.  Ensure all answers are your own words and your own work.  Do not delete anything below these instructions.  Thank you! 
+
+
+
+**Question 1A:**
+```{r Question 1A}
+#INSERT CODE HERE
+setwd("/Users/fanfan/Documents/2022fallb/GBA436R/Assignment4")
+df = read.csv('Homework 4 Data - 436(R).csv')
+mydf = df[df$brand == 9, ]
+head(mydf) ### In this case, I only analyze the data with the same brand digit as my student id
+
+```
+
+**Question 1B:**
+```{r Question 1B}
+#INSERT CODE HERE
+thisLM = lm(log(units)~price+isFeature,data=mydf)
+summary(thisLM)
+```
+
+**Question 1C:**
+```{r Question 1C}
+#INSERT CODE HERE
+possiblePrices = data.frame(price = seq(0,10,.01),isFeature = FALSE)
+```
+
+**Question 1D:**
+```{r Question 1D}
+#INSERT CODE HERE
+possiblePrices$predictedDemand = exp(predict(thisLM,possiblePrices))
+head(possiblePrices)
+```
+
+**Question 1E:**
+```{r Question 1E}
+#INSERT CODE HERE
+average_margin = mean(mydf$marginalCost)
+possiblePrices$profitMargin = possiblePrices$price - average_margin
+```
+
+**Question 1F:**
+```{r Question 1F}
+#INSERT CODE HERE
+possiblePrices$profit = possiblePrices$profitMargin * possiblePrices$predictedDemand
+
+```
+
+**Question 1G:**
+```{r Question 1G}
+#INSERT CODE HERE
+
+#Keep 'optPrice' here so we can see your optimal price
+optPrice = possiblePrices[which.max(possiblePrices$profit),]
+#possiblePrices[possiblePrices$price == 2.05,]
+optPrice
+```
+
+**Question 1H:**
+```{r Question 1H}
+#INSERT CODE HERE
+thisLM = lm(log(units)~price,data=mydf)
+possiblePrices = data.frame(price = seq(0,10,.01))
+possiblePrices$predictedDemand = exp(predict(thisLM,possiblePrices))
+average_margin = mean(mydf$marginalCost)
+possiblePrices$profitMargin = possiblePrices$price - average_margin
+possiblePrices$profit = possiblePrices$profitMargin * possiblePrices$predictedDemand
+optPrice = possiblePrices[which.max(possiblePrices$profit),]
+
+#Keep 'optPrice' here so we can see your optimal price
+optPrice
+```
+
+**Question 1I:**
+```{r Question 1I}
+#INSERT CODE HERE
+thisLM = lm(log(units)~price*isFeature,data=mydf)
+possiblePrices = data.frame(price = seq(0,10,.01), isFeature = TRUE)
+possiblePrices$predictedDemand = exp(predict(thisLM,possiblePrices))
+average_margin = mean(mydf$marginalCost)
+possiblePrices$profitMargin = possiblePrices$price - average_margin
+possiblePrices$profit = possiblePrices$profitMargin * possiblePrices$predictedDemand
+optPrice = possiblePrices[which.max(possiblePrices$profit),]
+
+#Keep 'optPrice' here so we can see your optimal price
+optPrice
+#summary(thisLM)
+```
+
+
+
+**Question 2A:**
+60 WORDS MAX.  SUBMIT WRITTEN ANSWER VIA IN THE BLACKBOARD SUBMISSION LINK.
+
+The demand model in 1b yields a higher optimal price. This is because when the variable "isFeature" is omitted, the negative effect of the price is overestimated. Therefore, the price curve will shift left and optimal price will decrease in 1h than 1b.
+
+**Question 2B:**
+60 WORDS MAX.  SUBMIT WRITTEN ANSWER VIA IN THE BLACKBOARD SUBMISSION LINK.
+
+I expect that 1g will yield higher profit if implemented. Also, the conclusion proves when I take price = 2.05(1h) and price = 2.13(1g) into calculation. This is because omitted variable of "isFeatured" will bias the optimal price to a lower value and therefore decrease the profit.
+
+**Question 2C:**
+60 WORDS MAX.  SUBMIT WRITTEN ANSWER VIA IN THE BLACKBOARD SUBMISSION LINK.
+
+The featured price in 1i will be lower than standard price in 1g. The interaction term between price and isFeatured is negative so that the demand will be more sensitive to changes in price when isFeatured is true. And this leads to a lower optimal price.
+
+
+Question 2D: The analysis did not consider the prices of other brands in the market, which leads to an omitted variable bias in the calculated optimal price. This bias causes the calculated optimal price to be higher than the actual optimal price. Since the correlation between the price of the other brands and the particular brand is positive, the discount of other brands will decrease the price of the particular brand. And we will underestimate the price sensitivity if we omit this effect. Therefore, the optimal price we calculate in 1g will be higher than the actual optimal price.
